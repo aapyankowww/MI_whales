@@ -1,0 +1,56 @@
+% RUN_MI_PIPELINE
+% Главный пользовательский скрипт.
+% Изменяйте параметры ниже вручную и запускайте файл целиком.
+
+repo_root = fileparts(mfilename('fullpath'));
+addpath(repo_root);
+addpath(genpath(fullfile(repo_root, 'src')));
+
+%% ======================== ПУТИ ========================
+audio_path = fullfile(repo_root, '..', '12-22.WAV');
+label_path = "";
+output_dir = default_output_dir(repo_root);
+
+%% =================== ПОДГОТОВКА ДАННЫХ ===================
+pad_left_sec = 5.0;
+pad_right_sec = 5.0;
+segment_duration_sec = 30.0;
+segment_overlap_sec = 0.0;
+
+%% ================== ВЫБОР ЧАСТОТЫ ==================
+frequency_mode = "single";      % "single" или "band"
+target_hz = 1000;
+range_hz = [800 1200];
+
+%% ======================= БИННИНГ =======================
+binning_type = "quantile";      % "quantile" или "uniform"
+n_bins = 5;
+
+%% ======================== MI ========================
+max_delay_sec = 1.0;
+window_duration_sec = 1.0;
+n_perms = 0;
+
+%% ======================= ГРАФИКИ =======================
+save_segment_preview = true;
+ci_level = 0.95;
+
+summary = run_mi_pipeline_core( ...
+    audio_path, ...
+    label_path, ...
+    output_dir, ...
+    pad_left_sec, ...
+    pad_right_sec, ...
+    segment_duration_sec, ...
+    segment_overlap_sec, ...
+    frequency_mode, ...
+    target_hz, ...
+    range_hz, ...
+    binning_type, ...
+    n_bins, ...
+    max_delay_sec, ...
+    window_duration_sec, ...
+    n_perms, ...
+    save_segment_preview, ...
+    ci_level);
+disp(summary.output_dir);
