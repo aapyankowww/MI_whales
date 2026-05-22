@@ -48,13 +48,13 @@ ci_level = 0.95;
 %% ===================== СОХРАНЕНИЕ ======================
 write_tensor_shards = true;
 max_tensor_shard_size_mb = 1024;
-tensor_shard_mat_format = '-v7';
+tensor_shard_mat_format = '-v7.3';
 
 %% ================== PLAIN-РЕЖИМ ==================
 plain_processing_mode = "file_global_binning";
 save_window_matrices = true;
 save_file_level_tensor = false;
-window_matrix_mat_format = '-v7';
+window_matrix_mat_format = '-v7.3';
 use_mex_backend = true;
 
 summary = run_mi_pipeline_core( ...

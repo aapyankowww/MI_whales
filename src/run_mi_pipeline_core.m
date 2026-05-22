@@ -54,7 +54,7 @@ else
         run_metadata, repo_root);
 end
 
-save(fullfile(output_dir, 'run_summary.mat'), 'summary', 'run_metadata', 'dataset');
+save(fullfile(output_dir, 'run_summary.mat'), '-v7.3', 'summary', 'run_metadata', 'dataset');
 fprintf('Готово. Результаты сохранены в: %s\n', output_dir);
 end
 

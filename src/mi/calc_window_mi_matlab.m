@@ -7,11 +7,11 @@ n_delays = mi_constants.n_delays;
 dt_frames = double(mi_constants.dt_frames_int32(:).');
 base_cols = double(window_start_frame) + (0:window_dur-1);
 
-mi_window = zeros(n_freqs, n_delays, 'double');
+mi_window = zeros(n_freqs, n_delays, 'single');
 if perm_cache.n_perms > 0
-    shift_mean = zeros(n_freqs, n_delays, 'double');
-    shift_median = zeros(n_freqs, n_delays, 'double');
-    shift_std = zeros(n_freqs, n_delays, 'double');
+    shift_mean = zeros(n_freqs, n_delays, 'single');
+    shift_median = zeros(n_freqs, n_delays, 'single');
+    shift_std = zeros(n_freqs, n_delays, 'single');
 else
     shift_mean = [];
     shift_median = [];

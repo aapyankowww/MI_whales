@@ -1,2 +1,20 @@
 results/
 *.asv
+
+# Compiled MEX binaries
+*.mexw64
+*.mexw32
+*.mexmaci64
+*.mexmaci
+*.mexa64
+
+# Generated data
+*.mat
+*.png
+*.jpg
+*.fig
+
+# Test artifacts
+tempdir/
+example_inputs/
+example_inputs_annotated/

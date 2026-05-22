@@ -24,7 +24,7 @@ payload.code_version = "mi_profiles_repository_local_v1";
 payload.run_metadata = run_metadata;
 
 mat_path = fullfile(output_dir, sprintf('%s_result.mat', segment.id));
-save(mat_path, '-struct', 'payload', '-v7');
+save(mat_path, '-struct', 'payload', '-v7.3');
 end
 
 function mi_result_to_save = prepare_mi_result_for_disk(mi_result, output_dir, segment_id, write_tensor_shards, max_tensor_shard_size_mb, tensor_shard_mat_format)

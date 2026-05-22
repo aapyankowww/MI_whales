@@ -9,10 +9,7 @@ profile_samples = aggregate_profiles(mi_result.mi_values);
 profile_stats = compute_profile_ci(profile_samples, ci_level);
 perm_stats = [];
 
-if isfield(mi_result, 'shift_mi') && ~isempty(mi_result.shift_mi)
-    perm_samples = aggregate_shift(mi_result.shift_mi);
-    perm_stats = compute_profile_ci(perm_samples, ci_level);
-elseif isfield(mi_result, 'shift_stats') && ~isempty(mi_result.shift_stats)
+if isfield(mi_result, 'shift_stats') && ~isempty(mi_result.shift_stats)
     perm_stats = aggregate_shift_stats(mi_result.shift_stats, ci_level);
 end
 
@@ -71,18 +68,6 @@ if isvector(per_freq)
     per_freq = per_freq(:).';
 end
 profile_samples = per_freq;
-end
-
-function perm_samples = aggregate_shift(shift_mi)
-perm_by_delay = permute(shift_mi, [2, 1, 3, 4]);
-n_delays = size(perm_by_delay, 1);
-perm_samples = zeros(numel(perm_by_delay(1, :, :, :)), n_delays);
-
-for di = 1:n_delays
-    samples = perm_by_delay(di, :, :, :);
-    samples = samples(:);
-    perm_samples(:, di) = samples;
-end
 end
 
 function perm_stats = aggregate_shift_stats(shift_stats, ci_level)

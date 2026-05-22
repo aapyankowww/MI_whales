@@ -27,9 +27,9 @@ hist_size = int32(n_bins * n_bins);
 delay_offsets = int32(0:n_delays-1) .* hist_size;
 delay_vec = int32(-max_delay_frames:max_delay_frames);
 
-mi_values = zeros(n_freqs, n_delays, n_windows, 'double');
+mi_values = zeros(n_freqs, n_delays, n_windows, 'single');
 if n_perms > 0
-    shift_mi = zeros(n_freqs, n_delays, n_perms, n_windows, 'double');
+    shift_mi = zeros(n_freqs, n_delays, n_perms, n_windows, 'single');
 else
     shift_mi = [];
 end
@@ -74,8 +74,8 @@ mi_result.t0_frames = t0_frames;
 mi_result.selected_freq_idx = selected_freq_idx;
 mi_result.selected_freq_hz = selected_freq_hz;
 mi_result.freq_band_hz = freq_band_hz;
-mi_result.shift_mi = shift_mi;
 mi_result.shift_stats = summarize_shift_tensor(shift_mi, 3);
+mi_result.shift_mi = [];
 mi_result.run_params = struct( ...
     'max_delay_sec', max_delay_sec, ...
     'max_delay_frames', max_delay_frames, ...

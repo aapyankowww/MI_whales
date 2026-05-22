@@ -91,7 +91,7 @@ else
 end
 
 if save_file_level_tensor
-    file_mi_values = zeros(n_freqs, n_delays, n_windows, 'double');
+    file_mi_values = zeros(n_freqs, n_delays, n_windows, 'single');
     if n_perms > 0
         file_shift_stats = init_file_shift_stats(n_freqs, n_delays, n_windows);
     else
@@ -439,9 +439,9 @@ end
 
 function file_shift_stats = init_file_shift_stats(n_freqs, n_delays, n_windows)
 file_shift_stats = struct();
-file_shift_stats.mean = zeros(n_freqs, n_delays, n_windows, 'double');
-file_shift_stats.median = zeros(n_freqs, n_delays, n_windows, 'double');
-file_shift_stats.std = zeros(n_freqs, n_delays, n_windows, 'double');
+file_shift_stats.mean = zeros(n_freqs, n_delays, n_windows, 'single');
+file_shift_stats.median = zeros(n_freqs, n_delays, n_windows, 'single');
+file_shift_stats.std = zeros(n_freqs, n_delays, n_windows, 'single');
 file_shift_stats.count = [];
 end
 

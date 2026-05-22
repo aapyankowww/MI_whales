@@ -39,7 +39,7 @@ mi_result = struct( ...
 run_metadata = struct('max_shard_size_mb', 0.001, 'write_tensor_shards', true);
 
 [matPath, payload] = save_mi_result( ...
-    segment, fft_result, binning_meta, mi_result, outDir, run_metadata, true, 0.001, '-v7');
+    segment, fft_result, binning_meta, mi_result, outDir, run_metadata, true, 0.001, '-v7.3');
 
 verifyTrue(testCase, isfile(matPath));
 verifyTrue(testCase, isfield(payload.mi_result, 'tensor_shards'));
