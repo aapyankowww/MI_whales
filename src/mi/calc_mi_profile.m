@@ -16,16 +16,16 @@ if window_dur_frames < 1
     error('window_duration_sec слишком мал для текущего шага FFT');
 end
 
-n_delays = max_delay_frames + 1;
-n_windows = floor((n_frames - max_delay_frames) / window_dur_frames);
+n_delays = 2 * max_delay_frames + 1;
+n_windows = floor((n_frames - 2 * max_delay_frames) / window_dur_frames);
 if n_windows < 1
     error(['Сегмент %s слишком короткий для выбранных параметров MI. ' ...
-        'Требуется больше временных кадров FFT.'], segment.id);
+        'Требуется больше временных кадров FFT с запасом для лагов в обе стороны.'], segment.id);
 end
 
 hist_size = int32(n_bins * n_bins);
 delay_offsets = int32(0:n_delays-1) .* hist_size;
-delay_vec = int32(0:max_delay_frames);
+delay_vec = int32(-max_delay_frames:max_delay_frames);
 
 mi_values = zeros(n_freqs, n_delays, n_windows, 'double');
 if n_perms > 0
@@ -37,7 +37,7 @@ end
 t0_frames = zeros(1, n_windows);
 
 for wi = 1:n_windows
-    start_col = (wi - 1) * window_dur_frames + 1;
+    start_col = max_delay_frames + (wi - 1) * window_dur_frames + 1;
     base_cols = int32(start_col : start_col + window_dur_frames - 1);
     t0_frames(wi) = start_col;
 
@@ -68,13 +68,14 @@ end
 
 mi_result = struct();
 mi_result.mi_values = mi_values;
-mi_result.dt_frames = 0:max_delay_frames;
-mi_result.dt_sec = (0:max_delay_frames) * frame_step_sec;
+mi_result.dt_frames = -max_delay_frames:max_delay_frames;
+mi_result.dt_sec = (-max_delay_frames:max_delay_frames) * frame_step_sec;
 mi_result.t0_frames = t0_frames;
 mi_result.selected_freq_idx = selected_freq_idx;
 mi_result.selected_freq_hz = selected_freq_hz;
 mi_result.freq_band_hz = freq_band_hz;
 mi_result.shift_mi = shift_mi;
+mi_result.shift_stats = summarize_shift_tensor(shift_mi, 3);
 mi_result.run_params = struct( ...
     'max_delay_sec', max_delay_sec, ...
     'max_delay_frames', max_delay_frames, ...
@@ -82,7 +83,8 @@ mi_result.run_params = struct( ...
     'window_duration_frames', window_dur_frames, ...
     'n_perms', n_perms, ...
     'frame_step_sec', frame_step_sec, ...
-    'n_bins', n_bins);
+    'n_bins', n_bins, ...
+    'lag_mode', 'symmetric');
 mi_result.provenance = struct( ...
     'segment_id', segment.id, ...
     'binning_type', binning_meta.type, ...
@@ -129,8 +131,8 @@ end
 end
 
 function mi = mi_calc_core(base_cols, shifted_cols, window_dur, n_delays, n_bins, delay_offsets, hist_size, bin_row)
-base_bins = bin_row(double(base_cols)).';
-shifted_bins = reshape(bin_row(double(shifted_cols(:))), window_dur, n_delays);
+base_bins = int32(bin_row(double(base_cols)).');
+shifted_bins = int32(reshape(bin_row(double(shifted_cols(:))), window_dur, n_delays));
 
 pair_idx = base_bins .* int32(n_bins) + shifted_bins;
 flat_idx = pair_idx + delay_offsets;

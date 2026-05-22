@@ -26,6 +26,13 @@ window_fn = hann(window_samples, 'periodic');
 power_matrix = abs(S) .^ 2;
 db_matrix = 10 * log10(power_matrix + eps);
 
+if numel(F) > params.target_freq_bin_count
+    keep_idx = 1:params.target_freq_bin_count;
+    F = F(keep_idx);
+    power_matrix = power_matrix(keep_idx, :);
+    db_matrix = db_matrix(keep_idx, :);
+end
+
 fft_result = struct();
 fft_result.segment_id = segment.id;
 fft_result.sample_rate = fs;
@@ -39,15 +46,18 @@ fft_result.fft_params = struct( ...
     'window_samples', window_samples, ...
     'overlap_samples', overlap_samples, ...
     'nfft', nfft, ...
+    'target_freq_bin_count', params.target_freq_bin_count, ...
+    'actual_freq_bin_count', numel(F), ...
     'window_name', params.window_name, ...
     'channel_mode', params.channel_mode);
 end
 
 function params = default_fft_params()
 params = struct();
-params.window_samples = 2048;
-params.overlap_samples = 1024;
-params.nfft = 2048;
+params.window_samples = 1024;
+params.overlap_samples = 512;
+params.nfft = 1024;
+params.target_freq_bin_count = 512;
 params.window_name = 'hann_periodic';
 params.channel_mode = 'mono_mean';
 end

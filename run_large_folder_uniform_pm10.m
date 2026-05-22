@@ -1,15 +1,24 @@
-% RUN_MI_PIPELINE
-% Главный пользовательский скрипт.
-% Изменяйте параметры ниже вручную и запускайте файл целиком.
+% RUN_LARGE_FOLDER_UNIFORM_PM10
+% Запуск для большой папки аудио:
+% - равномерный биннинг
+% - окно MI = 1 секунда
+% - лаги от -10 до +10 секунд
 
 repo_root = fileparts(mfilename('fullpath'));
 addpath(repo_root);
 addpath(genpath(fullfile(repo_root, 'src')));
 
 %% ======================== ПУТИ ========================
-audio_path = fullfile(repo_root, '..', '12-22.WAV');
+% Основной сценарий этого файла: запуск по большой папке с WAV-файлами.
+% Укажите здесь путь к папке. При необходимости можно задать и один WAV-файл.
+audio_path = "C:\Users\redac\OneDrive\Documents\MATLAB\project\recordings";
+% audio_path = fullfile(repo_root, '..', '12-22.WAV');
 label_path = "";
-output_dir = default_output_dir(repo_root);
+output_dir = fullfile(repo_root, 'results', 'large_folder_uniform_pm10_mex');
+
+if audio_path == "C:\path\to\large_audio_folder"
+    error('Укажите реальный путь к папке с WAV-файлами в переменной audio_path.');
+end
 
 %% =================== ПОДГОТОВКА ДАННЫХ ===================
 pad_left_sec = 5.0;
@@ -23,13 +32,14 @@ target_hz = 1000;
 range_hz = [0 22050];
 
 %% ======================= БИННИНГ =======================
-binning_type = "uniform";       % "quantile" или "uniform"
-n_bins = 5;
+binning_type = "uniform";
+n_bins = 10;
 
 %% ======================== MI ========================
 max_delay_sec = 10.0;
 window_duration_sec = 1.0;
-n_perms = 0;
+n_perms = 10;
+% Профиль будет рассчитан по лагам от -10 до +10 секунд.
 
 %% ======================= ГРАФИКИ =======================
 save_segment_preview = false;
@@ -37,7 +47,7 @@ ci_level = 0.95;
 
 %% ===================== СОХРАНЕНИЕ ======================
 write_tensor_shards = true;
-max_tensor_shard_size_mb = 128;
+max_tensor_shard_size_mb = 1024;
 tensor_shard_mat_format = '-v7';
 
 %% ================== PLAIN-РЕЖИМ ==================

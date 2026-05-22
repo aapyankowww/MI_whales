@@ -21,11 +21,15 @@ switch mode
         if numel(range_hz) ~= 2 || range_hz(2) < range_hz(1)
             error('range_hz должен быть в виде [f_low, f_high]');
         end
-        if range_hz(1) < min(freq_hz) || range_hz(2) > max(freq_hz)
-            error('Запрошенный диапазон [%.2f, %.2f] Гц вне диапазона FFT [%.2f, %.2f] Гц', ...
-                range_hz(1), range_hz(2), min(freq_hz), max(freq_hz));
+        fft_min_hz = min(freq_hz);
+        fft_max_hz = max(freq_hz);
+        clipped_range_hz = [max(range_hz(1), fft_min_hz), min(range_hz(2), fft_max_hz)];
+
+        if clipped_range_hz(2) < clipped_range_hz(1)
+            error('Запрошенный диапазон [%.2f, %.2f] Гц не пересекается с диапазоном FFT [%.2f, %.2f] Гц', ...
+                range_hz(1), range_hz(2), fft_min_hz, fft_max_hz);
         end
-        mask = freq_hz >= range_hz(1) & freq_hz <= range_hz(2);
+        mask = freq_hz >= clipped_range_hz(1) & freq_hz <= clipped_range_hz(2);
         selected_idx = find(mask);
         if isempty(selected_idx)
             error('В указанном диапазоне [%g, %g] Гц нет FFT-бинов', range_hz(1), range_hz(2));
@@ -34,6 +38,7 @@ switch mode
         freq_band_hz = [range_hz(1), range_hz(2)];
         meta.mode = "band";
         meta.requested_hz = range_hz;
+        meta.actual_hz = clipped_range_hz;
     otherwise
         error('Неподдерживаемый режим выбора частоты: %s', string(frequency_mode));
 end
